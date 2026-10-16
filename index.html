@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>FIELD//FAIL Demo Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #111312;
+  --panel: #181b19;
+  --panel-2: #1e221f;
+  --line: #2b302c;
+  --text: #dfe5dc;
+  --dim: #7f8a80;
+  --sage: #b9dc9c;
+  --sage-dim: #4f6343;
+  --copper: #c07a4f;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --sans: "Space Grotesk", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; }
+button { font: inherit; color: inherit; }
+.app { max-width: 1280px; margin: 0 auto; padding: 18px 16px 40px; }
+
+header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px;
+         border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+.logo { font-family: var(--sans); font-weight: 700; font-size: 28px; letter-spacing: .02em; }
+.logo span { color: var(--sage); }
+.sub { color: var(--dim); margin-top: 4px; }
+.transport { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.btn { background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 8px 14px; cursor: pointer; }
+.btn:hover { border-color: var(--sage-dim); }
+.btn.primary { background: var(--sage); color: #101410; border-color: var(--sage); font-weight: 600; min-width: 92px; }
+.btn.hold.active { background: var(--copper); border-color: var(--copper); color: #160c06; }
+.readout { color: var(--dim); min-width: 120px; }
+.readout b { color: var(--text); font-weight: 500; }
+input[type=range] { accent-color: var(--sage); width: 90px; }
+
+.layout { display: grid; grid-template-columns: 200px minmax(0, 1fr) 330px; gap: 16px; margin-top: 16px; }
+@media (max-width: 1080px) { .layout { grid-template-columns: 180px minmax(0, 1fr); } .detail { grid-column: 1 / -1; } }
+@media (max-width: 720px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+.label { color: var(--dim); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 12px 12px 6px; }
+
+.sources button { display: block; width: 100%; text-align: left; background: none; border: 0; border-left: 2px solid transparent;
+                  padding: 8px 12px; cursor: pointer; }
+.sources button:hover { background: var(--panel-2); }
+.sources button.on { border-left-color: var(--sage); background: var(--panel-2); color: var(--sage); }
+.sources small { display: block; color: var(--dim); font-size: 11px; margin-top: 2px; }
+
+.wave { position: relative; height: 150px; margin: 0 12px 10px; cursor: pointer; }
+.wave canvas { width: 100%; height: 100%; display: block; }
+.status { color: var(--dim); padding: 0 12px 10px; min-height: 18px; }
+.status.err { color: var(--copper); }
+
+.tex { width: 100%; border-collapse: collapse; }
+.tex tr { cursor: pointer; border-top: 1px solid var(--line); }
+.tex tr:hover { background: var(--panel-2); }
+.tex tr.on { background: #222a20; }
+.tex tr.on td:first-child { box-shadow: inset 2px 0 var(--sage); }
+.tex td { padding: 8px 10px; white-space: nowrap; }
+.tex td.name { width: 100%; white-space: normal; }
+.tex .key { color: var(--dim); width: 28px; }
+.tex tr.on .key, .tex tr.on .name { color: var(--sage); }
+.chip { font-size: 11px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 3px; color: var(--dim); }
+.chip.Hybrid { color: var(--sage); border-color: var(--sage-dim); }
+.chip.Spectral { color: #9fc4d6; border-color: #3b5360; }
+.chip.Slices { color: var(--copper); border-color: #5e3d28; }
+.mini { color: var(--dim); font-size: 11px; }
+@media (max-width: 720px) { .mini { display: none; } }
+
+.detail { padding-bottom: 12px; }
+.detail h2 { font-family: var(--sans); font-size: 20px; margin: 4px 12px 2px; }
+.detail p { color: var(--dim); margin: 4px 12px 12px; line-height: 1.5; }
+.params { margin: 0 12px; }
+.param { display: grid; grid-template-columns: 100px 1fr 40px; gap: 8px; padding: 3px 0; }
+.param .k { color: var(--dim); }
+.param .bar { color: var(--sage); letter-spacing: -1px; overflow: hidden; }
+.param .v { text-align: right; }
+pre.map { margin: 6px 12px 0; padding: 10px; background: #0c0e0d; border: 1px solid var(--line); border-radius: 4px;
+          color: var(--sage); font-size: 9.5px; line-height: 1.05; overflow-x: auto; }
+.maptabs { display: flex; gap: 6px; margin: 10px 12px 0; }
+.maptabs button { background: none; border: 1px solid var(--line); border-radius: 3px; padding: 3px 8px; cursor: pointer; color: var(--dim); }
+.maptabs button.on { color: var(--sage); border-color: var(--sage-dim); }
+
+.keys { color: var(--dim); margin-top: 14px; line-height: 1.7; }
+.keys kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 5px; color: var(--text); font-family: var(--mono); }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <div class="logo">FIELD<span>//</span>FAIL</div>
+      <div class="sub">[DEMO.EXPLORER // PROTOTYPE V0.1]</div>
+    </div>
+    <div class="transport">
+      <button class="btn primary" id="play">&#9654; PLAY</button>
+      <button class="btn hold" id="dryHold" title="Hold to hear the dry source (or hold D)">HOLD DRY</button>
+      <div class="readout" id="pos">BAR <b>-</b> &middot; BEAT <b>-</b></div>
+      <label class="readout">VOL <input type="range" id="vol" min="0" max="1" step="0.01" value="0.8"></label>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="panel sources" id="sources"></nav>
+
+    <main class="panel">
+      <div class="label" id="srcLabel">Source</div>
+      <div class="wave" id="wave"><canvas id="canvas"></canvas></div>
+      <div class="status" id="status"></div>
+      <table class="tex" id="tex"></table>
+    </main>
+
+    <aside class="panel detail" id="detail"></aside>
+  </div>
+
+  <div class="keys">
+    <kbd>Space</kbd> play/pause &nbsp; <kbd>&uarr;</kbd><kbd>&darr;</kbd> texture &nbsp; <kbd>1</kbd>&ndash;<kbd>9</kbd>, <kbd>0</kbd> jump to texture &nbsp;
+    <kbd>`</kbd> dry &nbsp; hold <kbd>D</kbd> to compare with dry &nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> source &nbsp; click the waveform to seek.
+    All versions of a source play in sync, so switching keeps your place in the loop.
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+let data, ctx, master;
+let source = null;            // current source object from data
+let selected = "dry";         // texture id or "dry"
+let holdingDry = false;
+let playing = false, startedAt = 0, offset = 0;
+const cache = new Map();      // source id -> { dry: AudioBuffer, [texId]: AudioBuffer }
+let voices = [];              // { id, node, gain }
+let loopDur = 0;
+const peaksCache = new WeakMap();
+let loadToken = 0;
+
+function audio() {
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain();
+    master.gain.value = +$("vol").value;
+    master.connect(ctx.destination);
+  }
+  return ctx;
+}
+
+const texById = (id) => data.textures.find((t) => t.id === id);
+const order = () => ["dry", ...source.textures];
+
+function setStatus(msg, err) { const s = $("status"); s.textContent = msg; s.classList.toggle("err", !!err); }
+
+async function loadBuffers(src) {
+  if (cache.has(src.id)) return cache.get(src.id);
+  const ac = audio();
+  const files = { dry: src.dry };
+  for (const t of src.textures) files[t] = `audio/${src.id}_${t}.mp3`;
+  const entries = Object.entries(files);
+  let done = 0;
+  setStatus(`[LOADING // 0/${entries.length}]`);
+  const out = {};
+  await Promise.all(entries.map(async ([id, url]) => {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`${url}: ${res.status}`);
+    out[id] = await ac.decodeAudioData(await res.arrayBuffer());
+    setStatus(`[LOADING // ${++done}/${entries.length}]`);
+  }));
+  cache.set(src.id, out);
+  // Keep memory in check: only the two most recent sources stay decoded.
+  while (cache.size > 2) cache.delete(cache.keys().next().value);
+  return out;
+}
+
+function position() {
+  if (!loopDur) return 0;
+  const t = playing ? ctx.currentTime - startedAt : offset;
+  return ((t % loopDur) + loopDur) % loopDur;
+}
+
+function audibleId() { return holdingDry ? "dry" : selected; }
+
+function applyGains(instant) {
+  const id = audibleId();
+  for (const v of voices) {
+    const target = v.id === id ? 1 : 0;
+    if (instant) v.gain.gain.value = target;
+    else v.gain.gain.setTargetAtTime(target, ctx.currentTime, 0.004);
+  }
+}
+
+function startVoices(at) {
+  const bufs = cache.get(source.id);
+  voices = order().map((id) => {
+    const node = ctx.createBufferSource();
+    node.buffer = bufs[id];
+    node.loop = true;
+    node.loopEnd = loopDur;
+    const gain = ctx.createGain();
+    node.connect(gain).connect(master);
+    node.start(0, at);
+    return { id, node, gain };
+  });
+  applyGains(true);
+  startedAt = ctx.currentTime - at;
+}
+
+function stopVoices() {
+  for (const v of voices) { try { v.node.stop(); } catch (e) {} v.node.disconnect(); v.gain.disconnect(); }
+  voices = [];
+}
+
+async function play() {
+  audio();
+  if (ctx.state === "suspended") await ctx.resume();
+  if (!cache.has(source.id)) return;
+  startVoices(offset);
+  playing = true;
+  $("play").innerHTML = "&#10074;&#10074; PAUSE";
+}
+
+function pause() {
+  offset = position();
+  stopVoices();
+  playing = false;
+  $("play").innerHTML = "&#9654; PLAY";
+}
+
+function seek(sec) {
+  offset = Math.max(0, Math.min(loopDur - 0.01, sec));
+  if (playing) { stopVoices(); startVoices(offset); }
+}
+
+async function selectSource(src) {
+  const wasPlaying = playing;
+  if (playing) pause();
+  source = src;
+  offset = 0;
+  if (selected !== "dry" && !src.textures.includes(selected)) selected = "dry";
+  renderSources(); renderTable(); renderDetail();
+  $("srcLabel").textContent = `${src.group} / ${src.name} — ${src.bpm} BPM, ${src.bars} bars · ${src.note}`;
+  const token = ++loadToken;
+  try {
+    const bufs = await loadBuffers(src);
+    if (token !== loadToken) return;
+    loopDur = Math.min(...Object.values(bufs).map((b) => b.duration));
+    setStatus(`[READY // ${Object.keys(bufs).length} VERSIONS IN SYNC]`);
+    if (wasPlaying) play();
+  } catch (e) {
+    setStatus(`[LOAD.ERROR // ${e.message}]`, true);
+  }
+}
+
+function select(id) {
+  selected = id;
+  if (voices.length) applyGains(false);
+  renderTable(); renderDetail();
+}
+
+// ---------------------------------------------------------------- views ---
+function renderSources() {
+  const nav = $("sources");
+  nav.innerHTML = "";
+  let group = "";
+  for (const s of data.sources) {
+    if (s.group !== group) {
+      group = s.group;
+      const l = document.createElement("div");
+      l.className = "label"; l.textContent = group;
+      nav.appendChild(l);
+    }
+    const b = document.createElement("button");
+    b.className = s === source ? "on" : "";
+    b.innerHTML = `${s.name}<small>${s.bpm} BPM · ${s.textures.length} textures</small>`;
+    b.onclick = () => selectSource(s);
+    nav.appendChild(b);
+  }
+}
+
+const bar = (v, n = 12) => "█".repeat(Math.round(v * n)) + "░".repeat(n - Math.round(v * n));
+
+function renderTable() {
+  const rows = order().map((id, i) => {
+    const key = i === 0 ? "`" : i === 10 ? "0" : String(i);
+    if (id === "dry") return `<tr data-id="dry" class="${selected === "dry" ? "on" : ""}"><td class="key">${key}</td>
+      <td class="name">DRY<div class="mini">unprocessed source</div></td><td></td><td class="mini"></td></tr>`;
+    const t = texById(id);
+    return `<tr data-id="${id}" class="${selected === id ? "on" : ""}"><td class="key">${key}</td>
+      <td class="name">${t.name}<div class="mini">${t.blurb}</div></td>
+      <td><span class="chip ${t.mode}">${t.mode}</span></td>
+      <td class="mini">S ${t.scale.toFixed(2)} · F ${t.fracture.toFixed(2)} · P ${t.persistence.toFixed(2)} · W ${t.wet}%</td></tr>`;
+  });
+  $("tex").innerHTML = rows.join("");
+  for (const tr of $("tex").querySelectorAll("tr")) tr.onclick = () => select(tr.dataset.id);
+}
+
+let mapBar = "map1";
+function renderDetail() {
+  const d = $("detail");
+  if (selected === "dry") {
+    d.innerHTML = `<div class="label">Selected</div><h2>Dry</h2>
+      <p>The unprocessed source. Switch to any texture with the number keys or hold D while a texture plays to A/B.</p>`;
+    return;
+  }
+  const t = texById(selected);
+  const p = (k, v, shown) => `<div class="param"><span class="k">${k}</span><span class="bar">${bar(v)}</span><span class="v">${shown}</span></div>`;
+  d.innerHTML = `<div class="label">Selected · ${t.mode}</div><h2>${t.name}</h2><p>${t.blurb}</p>
+    <div class="params">
+      ${p("SCALE", t.scale, t.scale.toFixed(2))}
+      ${p("FRACTURE", t.fracture, t.fracture.toFixed(2))}
+      ${p("PERSISTENCE", t.persistence, t.persistence.toFixed(2))}
+      ${p("AMOUNT", t.amount, t.amount.toFixed(2))}
+      ${p("DRY/WET", t.wet / 100, t.wet + "%")}
+      <div class="param"><span class="k">SEED</span><span class="bar"></span><span class="v">${t.seed}</span></div>
+    </div>
+    <div class="label">Noise field · damage over one bar (time &rarr;, frequency &uarr;)</div>
+    <div class="maptabs"><button data-b="map1" class="${mapBar === "map1" ? "on" : ""}">BAR 1</button>
+      <button data-b="map3" class="${mapBar === "map3" ? "on" : ""}">BAR 3</button></div>
+    <pre class="map">${t[mapBar].replace(/&/g, "&amp;").replace(/</g, "&lt;")}</pre>`;
+  for (const b of d.querySelectorAll(".maptabs button")) b.onclick = () => { mapBar = b.dataset.b; renderDetail(); };
+}
+
+// ------------------------------------------------------------- waveform ---
+function peaks(buf, cols) {
+  let byCols = peaksCache.get(buf);
+  if (!byCols) { byCols = {}; peaksCache.set(buf, byCols); }
+  if (byCols[cols]) return byCols[cols];
+  const l = buf.getChannelData(0), r = buf.numberOfChannels > 1 ? buf.getChannelData(1) : l;
+  const len = Math.floor(loopDur * buf.sampleRate), step = len / cols, out = new Float32Array(cols);
+  for (let c = 0; c < cols; c++) {
+    let m = 0;
+    for (let i = Math.floor(c * step), e = Math.floor((c + 1) * step); i < e; i += 4) m = Math.max(m, Math.abs(l[i]), Math.abs(r[i]));
+    out[c] = m;
+  }
+  return (byCols[cols] = out);
+}
+
+function draw() {
+  const cv = $("canvas"), dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== w * dpr || cv.height !== h * dpr) { cv.width = w * dpr; cv.height = h * dpr; }
+  const g = cv.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, h);
+  g.fillStyle = "#0c0e0d"; g.fillRect(0, 0, w, h);
+
+  const bufs = source && cache.get(source.id);
+  if (bufs && loopDur) {
+    // Bar grid.
+    g.font = "10px IBM Plex Mono, monospace";
+    for (let b = 0; b < source.bars; b++) {
+      const x = Math.round((b / source.bars) * w) + 0.5;
+      g.strokeStyle = "#232823"; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke();
+      g.fillStyle = "#4b554c"; g.fillText(String(b + 1), x + 4, 12);
+    }
+    const cols = Math.max(64, Math.floor(w / 2)), mid = h / 2;
+    const drawPeaks = (buf, color, inset) => {
+      const p = peaks(buf, cols);
+      g.fillStyle = color;
+      for (let c = 0; c < cols; c++) {
+        const a = Math.min(1, p[c]) * (mid - inset);
+        g.fillRect((c / cols) * w, mid - a, Math.max(1, w / cols - 0.5), a * 2);
+      }
+    };
+    drawPeaks(bufs.dry, "#2a302b", 6);                                  // dry behind, for reference
+    if (audibleId() !== "dry") drawPeaks(bufs[audibleId()], "#b9dc9c", 6);
+    else drawPeaks(bufs.dry, "#8c968c", 6);
+
+    const x = (position() / loopDur) * w;
+    g.fillStyle = "#c07a4f"; g.fillRect(x - 1, 0, 2, h);
+
+    const beats = (position() / loopDur) * source.bars * 4;
+    $("pos").innerHTML = `BAR <b>${Math.floor(beats / 4) + 1}</b> · BEAT <b>${Math.floor(beats % 4) + 1}</b>`;
+  }
+  requestAnimationFrame(draw);
+}
+
+// --------------------------------------------------------------- inputs ---
+$("play").onclick = () => (playing ? pause() : play());
+$("vol").oninput = (e) => { audio(); master.gain.value = +e.target.value; };
+const hold = (on) => { holdingDry = on; $("dryHold").classList.toggle("active", on); if (voices.length) applyGains(false); };
+$("dryHold").onpointerdown = () => hold(true);
+for (const ev of ["pointerup", "pointerleave", "pointercancel"]) $("dryHold").addEventListener(ev, () => hold(false));
+$("wave").onclick = (e) => {
+  const r = e.currentTarget.getBoundingClientRect();
+  if (loopDur) seek(((e.clientX - r.left) / r.width) * loopDur);
+};
+
+document.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "INPUT" || e.metaKey || e.ctrlKey || e.altKey) return;
+  const ids = order(), i = ids.indexOf(selected);
+  if (e.code === "Space") { e.preventDefault(); playing ? pause() : play(); }
+  else if (e.key === "ArrowDown") { e.preventDefault(); select(ids[Math.min(ids.length - 1, i + 1)]); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); select(ids[Math.max(0, i - 1)]); }
+  else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    const s = data.sources.indexOf(source) + (e.key === "ArrowRight" ? 1 : -1);
+    if (s >= 0 && s < data.sources.length) selectSource(data.sources[s]);
+  }
+  else if (e.key === "`") select("dry");
+  else if (/^[0-9]$/.test(e.key)) { const n = e.key === "0" ? 10 : +e.key; if (ids[n]) select(ids[n]); }
+  else if ((e.key === "d" || e.key === "D") && !e.repeat) hold(true);
+});
+document.addEventListener("keyup", (e) => { if (e.key === "d" || e.key === "D") hold(false); });
+
+fetch("data.json").then((r) => r.json()).then((d) => {
+  data = d;
+  selectSource(data.sources[0]);
+  requestAnimationFrame(draw);
+}).catch((e) => setStatus(`[DATA.ERROR // ${e.message}]`, true));
+</script>
+</body>
+</html>
