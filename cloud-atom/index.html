@@ -84,8 +84,8 @@
 const FINDINGS = [
   ["ok", "The fixed engine is clean", "Placing each atom on the output timeline once and carrying a phase accumulator per atom removes both doc-loop bugs: block-rate buzz under stretch and clicks under pitch bend drop by 45–80 dB."],
   ["warn", "Linear phase does not save transients", "On an analysed snare, every phase mode except Preserve smears the attack, even at 1x (~6 ms rise, pre-echo at −17 dB). A click is dozens of atoms whose analysed phases cancel before the hit; re-phasing breaks that."],
-  ["ok", "Transient lock does", "Keeping the first 30 ms after each onset rigid while stretching the rest holds the click at 8x: 0.7 ms rise, full level. It is now the transient feature in the design (the Lock macro)."],
-  ["ok", "Linear, anchored to the onset, is a punch knob", "Lining all atoms up on the onset (not on their own centres) makes the hit +5 dB louder and tighter, with some pre-echo. That's the “Tight” macro; blend 0.3 is a subtle version."],
+  ["ok", "Transient lock does", "Keeping each hit rigid, from 5 ms before its onset to 30 ms after, while the gaps take the stretch holds the click at 8x: 0.41 ms rise (source 0.14 ms), pre-echo down to -36.5 dB. The 5 ms pre-roll came out of the C++ port: without it, atoms centred just before a hit got stretched 15x. It is now the transient feature in the design (the Lock macro)."],
+  ["ok", "Linear, anchored to the onset, is a punch knob", "Lining all atoms up on the onset (not on their own centres) makes the hit a few dB louder (+2.3 dB here, +4.3 dB on the C++ test snare) with some pre-echo. That is the Tight macro; blend 0.3 is a subtle version."],
   ["ok", "The noise layer earns its place", "Atoms alone miss hats and wires: 1/3-octave band error 4.4 dB on the reese and much worse at lower atom counts. With the noise layer it's 0.03 dB."],
   ["ok", "Analysis is fast enough", "6,000 atoms on a 2 s drum loop in 7 s of Python. 95% of the energy is in the first 100–300 atoms, so “playable in a second” is realistic in C++."],
 ];
