@@ -89,6 +89,12 @@ pre.map { margin: 6px 12px 0; padding: 10px; background: #0c0e0d; border: 1px so
 .maptabs button { background: none; border: 1px solid var(--line); border-radius: 3px; padding: 3px 8px; cursor: pointer; color: var(--dim); }
 .maptabs button.on { color: var(--sage); border-color: var(--sage-dim); }
 
+.versions { flex: 1 1 320px; max-width: 520px; }
+.vtabs { display: flex; gap: 6px; }
+.vtabs button { background: none; border: 1px solid var(--line); border-radius: 3px; padding: 4px 10px; cursor: pointer; color: var(--dim); }
+.vtabs button.on { color: #101410; background: var(--sage); border-color: var(--sage); font-weight: 600; }
+.vnote { color: var(--dim); font-size: 11.5px; line-height: 1.45; margin-top: 6px; }
+
 .keys { color: var(--dim); margin-top: 14px; line-height: 1.7; }
 .keys kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 5px; color: var(--text); font-family: var(--mono); }
 </style>
@@ -98,7 +104,11 @@ pre.map { margin: 6px 12px 0; padding: 10px; background: #0c0e0d; border: 1px so
   <header>
     <div>
       <div class="logo">FIELD<span>//</span>FAIL</div>
-      <div class="sub">[DEMO.EXPLORER // PROTOTYPE V0.1]</div>
+      <div class="sub" id="sub">[DEMO.EXPLORER]</div>
+    </div>
+    <div class="versions">
+      <div class="vtabs" id="vtabs"></div>
+      <div class="vnote" id="vnote"></div>
     </div>
     <div class="transport">
       <button class="btn primary" id="play">&#9654; PLAY</button>
@@ -123,7 +133,8 @@ pre.map { margin: 6px 12px 0; padding: 10px; background: #0c0e0d; border: 1px so
 
   <div class="keys">
     <kbd>Space</kbd> play/pause &nbsp; <kbd>&uarr;</kbd><kbd>&darr;</kbd> texture &nbsp; <kbd>1</kbd>&ndash;<kbd>9</kbd>, <kbd>0</kbd> jump to texture &nbsp;
-    <kbd>`</kbd> dry &nbsp; hold <kbd>D</kbd> to compare with dry &nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> source &nbsp; click the waveform to seek.
+    <kbd>`</kbd> dry &nbsp; hold <kbd>D</kbd> to compare with dry &nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> source &nbsp;
+    <kbd>V</kbd> switch prototype version &nbsp; click the waveform to seek.
     All versions of a source play in sync, so switching keeps your place in the loop.
   </div>
 </div>
@@ -131,7 +142,7 @@ pre.map { margin: 6px 12px 0; padding: 10px; background: #0c0e0d; border: 1px so
 <script>
 "use strict";
 const $ = (id) => document.getElementById(id);
-let data, ctx, master;
+let versions, data, ctx, master;  // data = the selected prototype version
 let source = null;            // current source object from data
 let selected = "dry";         // texture id or "dry"
 let holdingDry = false;
@@ -157,11 +168,14 @@ const order = () => ["dry", ...source.textures];
 
 function setStatus(msg, err) { const s = $("status"); s.textContent = msg; s.classList.toggle("err", !!err); }
 
+const cacheKey = (src) => `${data.id}:${src.id}`;
+
 async function loadBuffers(src) {
-  if (cache.has(src.id)) return cache.get(src.id);
+  const key = cacheKey(src);
+  if (cache.has(key)) return cache.get(key);
   const ac = audio();
   const files = { dry: src.dry };
-  for (const t of src.textures) files[t] = `audio/${src.id}_${t}.mp3`;
+  for (const t of src.textures) files[t] = `${data.audio}/${src.id}_${t}.mp3`;
   const entries = Object.entries(files);
   let done = 0;
   setStatus(`[LOADING // 0/${entries.length}]`);
@@ -172,7 +186,7 @@ async function loadBuffers(src) {
     out[id] = await ac.decodeAudioData(await res.arrayBuffer());
     setStatus(`[LOADING // ${++done}/${entries.length}]`);
   }));
-  cache.set(src.id, out);
+  cache.set(key, out);
   // Keep memory in check: only the two most recent sources stay decoded.
   while (cache.size > 2) cache.delete(cache.keys().next().value);
   return out;
@@ -196,7 +210,7 @@ function applyGains(instant) {
 }
 
 function startVoices(at) {
-  const bufs = cache.get(source.id);
+  const bufs = cache.get(cacheKey(source));
   voices = order().map((id) => {
     const node = ctx.createBufferSource();
     node.buffer = bufs[id];
@@ -219,7 +233,7 @@ function stopVoices() {
 async function play() {
   audio();
   if (ctx.state === "suspended") await ctx.resume();
-  if (!cache.has(source.id)) return;
+  if (!cache.has(cacheKey(source))) return;
   startVoices(offset);
   playing = true;
   $("play").innerHTML = "&#10074;&#10074; PAUSE";
@@ -237,11 +251,28 @@ function seek(sec) {
   if (playing) { stopVoices(); startVoices(offset); }
 }
 
-async function selectSource(src) {
+// Switch prototype version, keeping the same source, texture and loop position where possible.
+function selectVersion(v) {
+  if (v === data) return;
+  const keepPos = position(), srcId = source && source.id;
+  data = v;
+  renderVersions();
+  const src = data.sources.find((s) => s.id === srcId) || data.sources[0];
+  selectSource(src, keepPos);
+}
+
+function renderVersions() {
+  $("vtabs").innerHTML = versions.map((v) => `<button data-v="${v.id}" class="${v === data ? "on" : ""}">${v.label}</button>`).join("");
+  for (const b of $("vtabs").querySelectorAll("button")) b.onclick = () => selectVersion(versions.find((v) => v.id === b.dataset.v));
+  $("vnote").textContent = data.notes;
+  $("sub").textContent = `[DEMO.EXPLORER // PROTOTYPE ${data.label.toUpperCase()}]`;
+}
+
+async function selectSource(src, startAt = 0) {
   const wasPlaying = playing;
   if (playing) pause();
   source = src;
-  offset = 0;
+  offset = startAt;
   if (selected !== "dry" && !src.textures.includes(selected)) selected = "dry";
   renderSources(); renderTable(); renderDetail();
   $("srcLabel").textContent = `${src.group} / ${src.name} — ${src.bpm} BPM, ${src.bars} bars · ${src.note}`;
@@ -250,6 +281,7 @@ async function selectSource(src) {
     const bufs = await loadBuffers(src);
     if (token !== loadToken) return;
     loopDur = Math.min(...Object.values(bufs).map((b) => b.duration));
+    offset = Math.min(offset, loopDur - 0.01);
     setStatus(`[READY // ${Object.keys(bufs).length} VERSIONS IN SYNC]`);
     if (wasPlaying) play();
   } catch (e) {
@@ -287,7 +319,7 @@ const bar = (v, n = 12) => "█".repeat(Math.round(v * n)) + "░".repeat(n - Ma
 
 function renderTable() {
   const rows = order().map((id, i) => {
-    const key = i === 0 ? "`" : i === 10 ? "0" : String(i);
+    const key = i === 0 ? "`" : i === 10 ? "0" : i < 10 ? String(i) : "";
     if (id === "dry") return `<tr data-id="dry" class="${selected === "dry" ? "on" : ""}"><td class="key">${key}</td>
       <td class="name">DRY<div class="mini">unprocessed source</div></td><td></td><td class="mini"></td></tr>`;
     const t = texById(id);
@@ -350,7 +382,7 @@ function draw() {
   g.clearRect(0, 0, w, h);
   g.fillStyle = "#0c0e0d"; g.fillRect(0, 0, w, h);
 
-  const bufs = source && cache.get(source.id);
+  const bufs = source && cache.get(cacheKey(source));
   if (bufs && loopDur) {
     // Bar grid.
     g.font = "10px IBM Plex Mono, monospace";
@@ -403,13 +435,16 @@ document.addEventListener("keydown", (e) => {
     if (s >= 0 && s < data.sources.length) selectSource(data.sources[s]);
   }
   else if (e.key === "`") select("dry");
+  else if (e.key === "v" || e.key === "V") selectVersion(versions[(versions.indexOf(data) + 1) % versions.length]);
   else if (/^[0-9]$/.test(e.key)) { const n = e.key === "0" ? 10 : +e.key; if (ids[n]) select(ids[n]); }
   else if ((e.key === "d" || e.key === "D") && !e.repeat) hold(true);
 });
 document.addEventListener("keyup", (e) => { if (e.key === "d" || e.key === "D") hold(false); });
 
 fetch("data.json").then((r) => r.json()).then((d) => {
-  data = d;
+  versions = d.versions;
+  data = versions[0];
+  renderVersions();
   selectSource(data.sources[0]);
   requestAnimationFrame(draw);
 }).catch((e) => setStatus(`[DATA.ERROR // ${e.message}]`, true));
