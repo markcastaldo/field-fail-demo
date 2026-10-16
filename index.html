@@ -95,12 +95,17 @@ pre.map { margin: 6px 12px 0; padding: 10px; background: #0c0e0d; border: 1px so
 .vtabs button.on { color: #101410; background: var(--sage); border-color: var(--sage); font-weight: 600; }
 .vnote { color: var(--dim); font-size: 11.5px; line-height: 1.45; margin-top: 6px; }
 
+.plugtabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.plugtabs a { color: var(--dim); text-decoration: none; padding: 8px 14px; border: 1px solid transparent; border-bottom: 0; border-radius: 4px 4px 0 0; }
+.plugtabs a:hover { color: var(--text); }
+.plugtabs a.on { color: var(--text); border-color: var(--line); background: var(--panel); margin-bottom: -1px; }
 .keys { color: var(--dim); margin-top: 14px; line-height: 1.7; }
 .keys kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 5px; color: var(--text); font-family: var(--mono); }
 </style>
 </head>
 <body>
 <div class="app">
+  <nav class="plugtabs"><a href="./" class="on">FIELD//FAIL</a><a href="cloud-atom/">CLOUD//ATOM</a></nav>
   <header>
     <div>
       <div class="logo">FIELD<span>//</span>FAIL</div>

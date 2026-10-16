@@ -1,4 +1,6 @@
-# FIELD//FAIL demo explorer
+# FIELD//FAIL + CLOUD//ATOM demo explorer
 
-Static player for FIELD//FAIL prototype renders. Audio only, no engine code.
+Static players for prototype renders. Audio only, no engine code.
 
+- `/` FIELD//FAIL demo explorer
+- `/cloud-atom/` CLOUD//ATOM milestone 1 prototype
