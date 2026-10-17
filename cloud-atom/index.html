@@ -45,15 +45,59 @@
   .plugtabs a { color: var(--dim); text-decoration: none; padding: 8px 14px; border: 1px solid transparent; border-bottom: 0; border-radius: 4px 4px 0 0; }
   .plugtabs a:hover { color: var(--text); }
   .plugtabs a.on { color: var(--text); border-color: var(--line); background: var(--panel); margin-bottom: -1px; }
+
+  .log { list-style: none; margin: 0; padding: 0; }
+  .log li { display: grid; grid-template-columns: 96px 1fr; gap: 4px 14px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+  .log time { color: var(--dim); font-size: 12px; padding-top: 2px; }
+  .log b { color: var(--teal); font-weight: 600; }
+  .log p { margin: 4px 0 0; color: var(--dim); font-size: 12.5px; }
+  .road { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .road span { border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; font-size: 12px; color: var(--dim); }
+  .road span.done { color: var(--bg); background: var(--teal); border-color: var(--teal); }
+  .road span.next { color: var(--amber); border-color: var(--amber); }
+  .shot { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; display: block; margin-top: 4px; }
+  .ab { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+  .ab .t { grid-column: 1 / -1; color: var(--text); }
+  .ab .k { color: var(--dim); font-size: 12px; }
+  @media (max-width: 640px) { .log li, .ab { grid-template-columns: 1fr; } }
   @media (max-width: 640px) { .demo { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <main>
   <nav class="plugtabs"><a href="../">FIELD//FAIL</a><a href="./" class="on">CLOUD//ATOM</a></nav>
-  <h1>CLOUD<span>//</span>ATOM <span style="color:var(--dim);font-size:14px">milestone 1 prototype</span></h1>
+  <h1>CLOUD<span>//</span>ATOM <span style="color:var(--dim);font-size:14px">prototype + plugin v0.1</span></h1>
   <p class="sub">Matching pursuit analysis, corrected atom renderer, phase modes, noise layer. Python/numpy, offline.
     Every render below comes from the prototype's test run.</p>
+
+<!-- BUILDLOG:START -->
+  <h2>Build log</h2>
+  <div class="panel">
+    <ul class="log">
+      <li><time>2026-10-16</time><div><b>Plugin v0.1: a playable instrument</b><p>VST3, AU and Standalone. Load or drop a sample; it analyses in the background and is playable after about 0.6 s while it keeps refining. 8 voices, root note C4 = original pitch, the 9 macros, Stretch with Lock, Snap to key and scale. The project stores the cloud itself, so a session reopens without the sample. Mac universal build and auval run in CI; 23 headless plugin checks pass.</p></div></li>
+      <li><time>2026-10-16</time><div><b>Phase propagation: pitch, Snap and stretch stay whole</b><p>Building the plugin showed that a sustained sound shifted in pitch came out 20 dB too quiet: a partial is a chain of overlapping atoms whose analysed phases only line up at the original pitch and spacing. The engine now carries every phase to the new frequency and spacing (design doc 5.4), integrating pitch over time so bends and vibrato stay coherent too, and resets at onsets so hits stay intact. An octave up now plays at full level (5,033 vs 281 before, original 5,273). Before/after below.</p></div></li>
+      <li><time>2026-10-16</time><div><b>C++ engine (milestone 1b)</b><p>JUCE-free engine matching the Python prototype to between -64 and -103 dB on 17 cases. 8 voices x 419 active atoms take about 11% of one core (AVX2). The port found the transient-lock pre-roll: hits now stay rigid from 5 ms before each onset.</p></div></li>
+      <li><time>2026-10-16</time><div><b>Design doc v0.2</b><p>Findings folded back into the design: corrected render loop, transient lock, anchored Linear phase as the Tight punch control, noise layer, a cut-down v1 scope.</p></div></li>
+      <li><time>2026-10-16</time><div><b>Python prototype (milestone 1)</b><p>Matching pursuit, the corrected renderer, phase modes, noise layer: the renders further down.</p></div></li>
+    </ul>
+    <div class="road"><span class="done">M1 · Python prototype</span><span class="done">M1b · C++ engine</span><span class="done">v0.1 · Playable plugin (VST3 / AU / Standalone)</span><span class="next">M2 · Sculpt: select and edit atoms on the plane, op stack, presets</span><span class="planned">M3 · Morph between two clouds, per-region settings</span><span class="planned">M4 · Analysis quality: refinement pass, longer atoms</span><span class="planned">M5 · Starter presets, onboarding, polish</span></div>
+  </div>
+
+  <h2>The plugin, v0.1</h2>
+  <div class="panel">
+    <img class="shot" src="plugin-v0.1.png" alt="CLOUD ATOM plugin window: cloud view of a stretched tone, nine macro knobs, settings row and keyboard" width="1000" height="660">
+    <div class="legend">The editor rendered by the headless plugin tests: a 110 Hz tone stretched 8x. Builds go to testers directly.</div>
+  </div>
+
+  <h2>Phase propagation, before and after</h2>
+  <div class="panel">
+      <div class="ab"><div class="t">Reese +7 semitones</div><div><div class="k">before (phases as analysed)</div><audio controls preload="none" src="audio/reese_up7_before.mp3"></audio></div><div><div class="k">after (phase propagation)</div><audio controls preload="none" src="audio/reese_up7_after.mp3"></audio></div></div>
+      <div class="ab"><div class="t">Reese stretched 1.5x</div><div><div class="k">before (phases as analysed)</div><audio controls preload="none" src="audio/reese_x15_before.mp3"></audio></div><div><div class="k">after (phase propagation)</div><audio controls preload="none" src="audio/reese_x15_after.mp3"></audio></div></div>
+      <div class="ab"><div class="t">Drums snapped to C minor pentatonic</div><div><div class="k">before (phases as analysed)</div><audio controls preload="none" src="audio/drums_snap_before.mp3"></audio></div><div><div class="k">after (phase propagation)</div><audio controls preload="none" src="audio/drums_snap_after.mp3"></audio></div></div>
+      <div class="ab"><div class="t">Drums 4x with transient lock, stretch gain and the noise layer</div>
+        <div><audio controls preload="none" src="audio/drums_x4_lock_after.mp3"></audio></div></div>
+  </div>
+  <!-- BUILDLOG:END -->
 
   <h2>Findings</h2>
   <div class="find" id="findings"></div>
