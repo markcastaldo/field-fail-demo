@@ -61,20 +61,21 @@
   <h1>CHOP<span>//</span>STRAND <span style="color:var(--dim);font-size:14px">milestone 1 prototype</span></h1>
   <p class="sub">Note-aware slicing (SCAN) and phase-aligned cuts (SEVER) for bass. Python/numpy, offline.
     Every number and render below comes from the prototype's test run.</p>
-  <div class="panel note"><b>All audio here is synthetic.</b> M1 uses a bass-string model that writes exact ground truth for
-    every note boundary and every fret-noise decoy, so the slicers can be scored. That is the best case: real DI takes
-    (room noise, pickups, sloppy muting) are the next test, and the technique labels in particular mean little until then.</div>
+  <div class="panel note"><b>Mostly synthetic, plus three real takes.</b> M1 uses a bass-string model that writes exact ground truth for
+    every note boundary and every fret-noise decoy, so the slicers can be scored. That is the best case. The
+    <a href="#real" style="color:var(--amber)">real bass takes</a> below have no ground truth, so for them the page shows what SCAN and SEVER
+    did and what was measured, not a score.</div>
 
   <h2>Findings</h2>
   <div class="find" id="findings"></div>
 
-  <h2>Slice maps</h2>
+  <h2 id="maps">Slice maps</h2>
   <div class="panel">
     <div class="tabs" id="taketabs"></div>
     <div class="scorebar" id="scorebar"></div>
     <canvas id="map" width="2000" height="560"></canvas>
     <div class="legend">
-      <i style="color:#e8eeee">▏</i> truth boundary &nbsp; <i style="color:var(--red)">×</i> truth fret noise (should not be cut) &nbsp;
+      <i style="color:#e8eeee">▏</i> truth boundary (synthetic takes only) &nbsp; <i style="color:var(--red)">×</i> truth fret noise (should not be cut) &nbsp;
       <i style="color:var(--cyan)">▏</i> SCAN slice + technique code &nbsp; <i style="color:var(--red)">┊</i> SCAN rejected (noise / double) &nbsp;
       <i style="color:var(--amber)">▏</i> generic energy slicer &nbsp; bottom lane: tracked pitch (E1–E3 grid).
       Codes: FNG finger · PCK pick · SLP slap · POP pop · GHO ghost · DED dead · HAM hammer-on · PUL pull-off · SLD slide · ARR slide arrival.
@@ -82,7 +83,11 @@
     <pre class="log" id="syslog"></pre>
   </div>
 
-  <h2>Listen</h2>
+  <h2 id="real">Real bass takes</h2>
+  <div class="panel" id="realintro"></div>
+  <div id="realdemos"></div>
+
+  <h2>Listen (synthetic)</h2>
   <div id="demos"></div>
 
   <h2>SCAN: boundary accuracy</h2>
@@ -107,20 +112,23 @@
 </main>
 <script>
 const FINDINGS = [
-  ["ok", "Note-aware beats hit-aware", "On 10 held-out takes SCAN scores F 0.92 against 0.68 for a spectral-flux slicer and 0.61 for an energy slicer. The gap is legato: hammer-ons 18/18 found (vs 3 and 1), slide starts 18/18 (vs 0 and 2)."],
-  ["ok", "Fret noise stays out of the slice map", "Fret squeaks and scrapes are rejected when the energy under 1 kHz doesn't change and no new pitch follows: 8 of 155 decoys sliced, against 102 and 51 for the generic slicers. Rejected bursts go to a NOISE bank."],
+  ["ok", "Note-aware beats hit-aware", "On 10 held-out takes SCAN scores F 0.925 against 0.68 for a spectral-flux slicer and 0.61 for an energy slicer. The gap is legato: hammer-ons 18/18 found (vs 3 and 1), slide starts 18/18 (vs 0 and 2)."],
+  ["ok", "Fret noise stays out of the slice map", "Fret squeaks and scrapes are rejected when the energy under 1 kHz doesn't change and no new pitch follows: 2 of 155 decoys sliced, against 102 and 51 for the generic slicers. Rejected bursts go to a NOISE bank."],
   ["warn", "Bass energy must be measured per period", "A fixed short window ripples by more than 10 dB on a 41 Hz note, and the first SCAN build fired every half cycle (precision 0.33). RMS over exactly one local period removes the ripple. Every energy feature in the C++ engine needs this."],
   ["warn", "The pitch tracker blinks on legato changes", "Across a hammer-on the tracker goes unvoiced for 25–35 ms while its window straddles two periods, so a 'pitch change' detector that needs voicing on both sides never fires. SCAN matches stable pitch plateaus across short gaps instead. Low-note hammer-ons also smear into 80 ms ramps, so a slide must be at least 90 ms."],
   ["warn", "Ghost notes straight after a mute are the hard case", "37/60 held-out. A 46 ms flux frame hid them inside the previous note's mute; an 11.6 ms frame recovered most. The rest have no level rise and no pitch, and no hand rule separated them from the 585 non-boundary candidates. This is the job for a small learned onset model."],
   ["ok", "Period-aligned cuts work (doc 6.1 confirmed)", "Splicing inside a sustained note: 41% of generic 5 ms crossfades fail the audibility proxy (52–59% at 31–41 Hz). Period-aligned splices fail none. The doc's zero-crossing snap still fails 10% at 31 Hz; aligning by cross-correlation of the fundamental band fixes that."],
   ["ok", "Ship the seam meter", "The doc's seam score (phase, amplitude, spectrum, f0) ranks join badness well: Spearman 0.92 against the measured onset + dip. AUTO-FIX can maximise it."],
-  ["warn", "PERIOD-LINEAR only for same-note joins", "Between two different notes the signals are uncorrelated, so a linear fade loses 3 dB in the middle (36% fail). SEVER uses linear for the same note and equal-power across notes: 25% vs 42% for generic fades. Better, not solved. A correlation-steered fade law was too noisy over 1–2 periods."],
+  ["warn", "PERIOD-LINEAR only for same-note joins", "Between two different notes the signals are uncorrelated, so a linear fade loses 3 dB in the middle (38% fail). SEVER uses linear for the same note and equal-power across notes: 25% vs 45% for generic fades. Better, not solved. A correlation-steered fade law was too noisy over 1–2 periods."],
   ["warn", "Fade out inside the slice", "A slice that ends at a note boundary has no continuation of its own: what follows in the source is the next note. The first rechop render crossfaded through that and SEVER gained nothing. Fading out a few periods inside the slice fixed it: joins into legato starts flagged by the proxy dropped from 35/42 (generic) to 15/42 across five takes."],
   ["ok", "STRETCH-HOLD, plus decay-follow", "Whole-period loops with xcorr-aligned 4-period fades cut level wobble 2–4x against a naive loop and remove its dips (up to 3.7 dB → 0.2 dB). A pure loop stops decaying and sounds like an organ; decay-follow keeps the note's own decay rate to within 0.1 dB/s."],
   ["warn", "Technique labels: start with coarse classes", "77% held-out. Hammer, pull, slide, ghost and dead are reliable; finger, pick and slap blur together. It's also tuned on its own synthetic excitations. Ship few, robust classes first and grow with real data, as the doc's risk table says."],
   ["ok", "C++ engine matches, and is fast", "The JUCE-free C++ engine reproduces the prototype exactly: same pitch track (0.0001 cents), same boundaries, causes and labels on all 10 parity takes, bit-identical SEVER renders. It scans 37x realtime (30 s of bass in 0.8 s; the doc asks for under 10 s)."],
   ["warn", "The C++ tests caught a sparse-clip bug", "SCAN scaled flux to each take's own loudest onsets, so in a short clip with few notes every event saturated and a clean hammer-on read as a pluck. Fixed in both engines with a floor on the flux scale plus a scale-free check (a pitch change moves band energy, a pluck adds it). Scores on the synthetic sets are unchanged."],
+  ["warn", "Real takes: SCAN over-sliced at first", "On three real bass recordings the first SCAN found 74, 158 and 101 slices, many in places that are not notes: the pitch tracker hops onto an overtone (+12, +19, +24 semitones) as a note decays and that read as a new note; the string's release squeak at the end of a muted note (falling level plus a 2–8 kHz burst) passed the ghost-after-mute rule; and specks near the noise floor became plucks. Overtone jumps now need an attack or a rise, a falling level with a burst counts as a squeak unless the dip is deep or the onset strong, and the quiet check runs first: 64, 136 and 96 slices, with the synthetic scores about the same (held-out F 0.919 to 0.925, tuning 0.947 to 0.944). Without ground truth, how many of the remaining slices are right is not known yet."],
+  ["warn", "Real takes: SEVER helps, except under a chorus effect", "Stutter on a sustained D2 (6 repeats of 125 ms): the level dip per repeat falls from 7.6 to 0.5 dB (take 1) and 3.8 to 0.3 dB (take 2) with SEVER. Take 3 carries a stereo modulation effect (L/R correlation 0.91); there lining up the fundamental does not line up the upper partials, and SEVER's period-long fade scores worse than the plain 5 ms fade (onset 1.78 vs 0.57). Most joins in these staccato takes land on a pluck, so the rechop difference is small."],
 ];
+const REAL_INTRO = "Three real bass recordings (44.1 kHz stereo). They have no ground truth, so nothing here is a score: the numbers are what SCAN found and what the seams measured. They are tight, mostly staccato lines, and the technique labels lean heavily to slap and pop, which nobody has checked by ear yet.";
 const CODE = { FINGER: "FNG", PICK: "PCK", SLAP: "SLP", POP: "POP", GHOST: "GHO", DEAD: "DED", HAMMER: "HAM", PULL: "PUL", SLIDE: "SLD", ARRIVE: "ARR" };
 const GROUPS = {
   rechop_legato_line: "Rechop: legato line in reverse slice order",
@@ -135,6 +143,31 @@ const pct = (a, b) => `${a}/${b}`;
 
 document.getElementById("findings").append(...FINDINGS.map(([k, t, d]) =>
   el("div", { className: "panel" + (k === "warn" ? " warn" : "") }, `<b>${t}</b><br>${d}`)));
+
+fetch("real_results.json").then(r => r.json()).then(RR => {
+  const T = RR.takes;
+  const rows = Object.entries(T).map(([k, t]) => `<tr><td>${t.title}</td><td class=num>${t.dur.toFixed(1)} s</td><td class=num>${t.slices}</td>
+    <td class=num>${t.energy_slices} / ${t.flux_slices}</td><td class=num>${t.noise_rejected}</td><td class=num>${Math.round(t.voiced * 100)}%</td>
+    <td>${Object.entries(t.techniques).sort((a, b) => b[1] - a[1]).map(([n, c]) => `${CODE[n] || n} ${c}`).join(" · ")}</td></tr>`).join("");
+  document.getElementById("realintro").innerHTML = `${REAL_INTRO}<div class="tablewrap" style="margin-top:10px"><table>
+    <tr><th>take</th><th class=num>length</th><th class=num>SCAN slices</th><th class=num>energy / flux slicer</th>
+    <th class=num>fret noise rejected</th><th class=num>pitched frames</th><th>technique labels (unverified)</th></tr>${rows}</table></div>
+    <div class="legend">Mixed to mono before analysis. The slice maps are in the <a href="#maps" style="color:var(--teal)">Slice maps</a> panel under the REAL tabs.</div>`;
+  const box0 = document.getElementById("realdemos");
+  for (const [k, t] of Object.entries(T)) {
+    const items = RR.demos.filter(d => d.group === "real_" + k);
+    const box = el("div", { className: "panel group" });
+    box.append(el("div", { style: "color:var(--teal);margin-bottom:4px" }, t.title));
+    for (const d of items) {
+      const row = el("div", { className: "demo" });
+      row.append(el("div", { className: "n" }, d.name.replace("real_" + k + "_", "").replace(/^\d_/, "").replace(/_/g, " ")));
+      row.append(el("audio", { controls: true, preload: "none", src: "audio/" + d.file }));
+      row.append(el("div", { className: "d" }, d.note));
+      box.append(row);
+    }
+    box0.append(box);
+  }
+});
 
 fetch("results.json").then(r => r.json()).then(R => {
   // demos
@@ -229,12 +262,13 @@ fetch("scan.json").then(r => r.json()).then(S => {
   function draw(k) {
     tabs.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.k === k));
     const c = S[k], W = cv.width, H = cv.height;
-    bar.innerHTML = `${c.desc} · SCAN on this take: <b>F ${c.score.F.toFixed(2)}</b> (P ${c.score.P.toFixed(2)}, R ${c.score.R.toFixed(2)}) · ${c.slices.length} slices`;
+    bar.innerHTML = c.score ? `${c.desc} · SCAN on this take: <b>F ${c.score.F.toFixed(2)}</b> (P ${c.score.P.toFixed(2)}, R ${c.score.R.toFixed(2)}) · ${c.slices.length} slices`
+                            : `<b>${c.desc}</b>`;
     ctx.fillStyle = "#0a0c0d"; ctx.fillRect(0, 0, W, H);
     const x = t => t / c.dur * W;
     const top = 34, wy0 = 70, wy1 = 300, ey0 = 306, ey1 = 330, py0 = 344, py1 = 552;
     // truth lane
-    ctx.fillStyle = "#4a5357"; ctx.font = "18px monospace"; ctx.fillText("TRUTH", 6, 22);
+    ctx.fillStyle = "#4a5357"; ctx.font = "18px monospace"; ctx.fillText(c.truth.length ? "TRUTH" : "NO GROUND TRUTH (real recording)", 6, 22);
     ctx.strokeStyle = "rgba(232,238,238,.75)"; ctx.lineWidth = 2;
     for (const b of c.truth) { ctx.beginPath(); ctx.moveTo(x(b.t), 4); ctx.lineTo(x(b.t), top); ctx.stroke(); }
     ctx.fillStyle = "#ff6b6b"; ctx.font = "20px monospace";
@@ -261,8 +295,8 @@ fetch("scan.json").then(r => r.json()).then(S => {
     ctx.strokeStyle = "rgba(242,179,61,.9)";
     for (const t of c.energy) { ctx.beginPath(); ctx.moveTo(x(t), ey0); ctx.lineTo(x(t), ey1); ctx.stroke(); }
     // pitch lane: semitones 22..54
-    const lo = 22, hi = 54, py = m => py1 - (m - lo) / (hi - lo) * (py1 - py0);
-    for (const [m, name] of [[28, "E1"], [33, "A1"], [38, "D2"], [40, "E2"], [43, "G2"], [52, "E3"]]) {
+    const lo = 22, hi = 58, py = m => py1 - (m - lo) / (hi - lo) * (py1 - py0);
+    for (const [m, name] of [[28, "E1"], [33, "A1"], [38, "D2"], [43, "G2"], [50, "D3"], [57, "A3"]]) {
       ctx.strokeStyle = "#1c2124"; ctx.beginPath(); ctx.moveTo(0, py(m)); ctx.lineTo(W, py(m)); ctx.stroke();
       ctx.fillStyle = "#4a5357"; ctx.fillText(name, 6, py(m) - 3);
     }
@@ -271,7 +305,8 @@ fetch("scan.json").then(r => r.json()).then(S => {
     typeLog(c.log);
   }
   for (const k of Object.keys(S)) {
-    const b = el("button", {}, k.replace(/_/g, " ")); b.dataset.k = k; b.onclick = () => draw(k); tabs.append(b);
+    const b = el("button", {}, k.startsWith("real_bass") ? "REAL take " + k.slice(-1) : k.replace(/_/g, " "));
+    b.dataset.k = k; b.onclick = () => draw(k); tabs.append(b);
   }
   draw("legato_line");
 });

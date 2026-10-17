@@ -1,0 +1,284 @@
+{
+ "demos": [
+  {
+   "name": "real_bass1_0_source",
+   "file": "real_bass1_0_source.mp3",
+   "group": "real_bass1",
+   "note": "Real take 1 as recorded (mixed to mono, which is what SCAN hears). 16.0 s."
+  },
+  {
+   "name": "real_bass1_1_rechop_generic",
+   "file": "real_bass1_1_rechop_generic.mp3",
+   "group": "real_bass1",
+   "note": "The first 8 s as 37 SCAN slices played in reverse order, generic 5 ms fades."
+  },
+  {
+   "name": "real_bass1_2_rechop_sever",
+   "file": "real_bass1_2_rechop_sever.mp3",
+   "group": "real_bass1",
+   "note": "Same slices, SEVER joins. 35 of the 36 joins land on a pluck (tail-out: the outgoing note fades over one of its periods while the attack plays as recorded); 1 land mid-waveform, flagged as an audible seam: SEVER 1, generic 1."
+  },
+  {
+   "name": "real_bass1_3_stutter_generic",
+   "file": "real_bass1_3_stutter_generic.mp3",
+   "group": "real_bass1",
+   "note": "Stutter on slice at 0.47 s (D2, 73.9 Hz): a 125 ms chunk repeated 6 times, generic 5 ms fades. Measured per repeat: onset up to 2.48 (0.6 = audible line), dip up to 7.6 dB."
+  },
+  {
+   "name": "real_bass1_4_stutter_sever",
+   "file": "real_bass1_4_stutter_sever.mp3",
+   "group": "real_bass1",
+   "note": "Stutter on slice at 0.47 s (D2, 73.9 Hz): a 125 ms chunk repeated 6 times, SEVER: repeat points snapped to matching phase. Measured per repeat: onset up to 1.58 (0.6 = audible line), dip up to 0.5 dB."
+  },
+  {
+   "name": "real_bass1_5_hold_source",
+   "file": "real_bass1_5_hold_source.mp3",
+   "group": "real_bass1",
+   "note": "Short note at 0.47 s (D2), 0.39 s as sliced."
+  },
+  {
+   "name": "real_bass1_6_hold_sever",
+   "file": "real_bass1_6_hold_sever.mp3",
+   "group": "real_bass1",
+   "note": "Held to 2 s with STRETCH-HOLD + decay-follow: 12 loop wraps, worst wrap onset 0.52 (0.6 = audible line)."
+  },
+  {
+   "name": "real_bass2_0_source",
+   "file": "real_bass2_0_source.mp3",
+   "group": "real_bass2",
+   "note": "Real take 2 as recorded (mixed to mono, which is what SCAN hears). 32.0 s."
+  },
+  {
+   "name": "real_bass2_1_rechop_generic",
+   "file": "real_bass2_1_rechop_generic.mp3",
+   "group": "real_bass2",
+   "note": "The first 8 s as 31 SCAN slices played in reverse order, generic 5 ms fades."
+  },
+  {
+   "name": "real_bass2_2_rechop_sever",
+   "file": "real_bass2_2_rechop_sever.mp3",
+   "group": "real_bass2",
+   "note": "Same slices, SEVER joins. 30 of the 30 joins land on a pluck (tail-out: the outgoing note fades over one of its periods while the attack plays as recorded)."
+  },
+  {
+   "name": "real_bass2_3_stutter_generic",
+   "file": "real_bass2_3_stutter_generic.mp3",
+   "group": "real_bass2",
+   "note": "Stutter on slice at 18.04 s (D2, 73.6 Hz): a 125 ms chunk repeated 6 times, generic 5 ms fades. Measured per repeat: onset up to 0.76 (0.6 = audible line), dip up to 3.8 dB."
+  },
+  {
+   "name": "real_bass2_4_stutter_sever",
+   "file": "real_bass2_4_stutter_sever.mp3",
+   "group": "real_bass2",
+   "note": "Stutter on slice at 18.04 s (D2, 73.6 Hz): a 125 ms chunk repeated 6 times, SEVER: repeat points snapped to matching phase. Measured per repeat: onset up to 0.25 (0.6 = audible line), dip up to 0.3 dB."
+  },
+  {
+   "name": "real_bass2_5_hold_source",
+   "file": "real_bass2_5_hold_source.mp3",
+   "group": "real_bass2",
+   "note": "Short note at 18.04 s (D2), 0.46 s as sliced."
+  },
+  {
+   "name": "real_bass2_6_hold_sever",
+   "file": "real_bass2_6_hold_sever.mp3",
+   "group": "real_bass2",
+   "note": "Held to 2 s with STRETCH-HOLD + decay-follow: 9 loop wraps, worst wrap onset 0.31 (0.6 = audible line)."
+  },
+  {
+   "name": "real_bass3_0_source",
+   "file": "real_bass3_0_source.mp3",
+   "group": "real_bass3",
+   "note": "Real take 3 as recorded (mixed to mono, which is what SCAN hears). 18.6 s."
+  },
+  {
+   "name": "real_bass3_1_rechop_generic",
+   "file": "real_bass3_1_rechop_generic.mp3",
+   "group": "real_bass3",
+   "note": "The first 8 s as 48 SCAN slices played in reverse order, generic 5 ms fades."
+  },
+  {
+   "name": "real_bass3_2_rechop_sever",
+   "file": "real_bass3_2_rechop_sever.mp3",
+   "group": "real_bass3",
+   "note": "Same slices, SEVER joins. 47 of the 47 joins land on a pluck (tail-out: the outgoing note fades over one of its periods while the attack plays as recorded)."
+  },
+  {
+   "name": "real_bass3_3_stutter_generic",
+   "file": "real_bass3_3_stutter_generic.mp3",
+   "group": "real_bass3",
+   "note": "Stutter on slice at 16.31 s (D2, 73.7 Hz): a 125 ms chunk repeated 6 times, generic 5 ms fades. Measured per repeat: onset up to 0.57 (0.6 = audible line), dip up to 3.2 dB."
+  },
+  {
+   "name": "real_bass3_4_stutter_sever",
+   "file": "real_bass3_4_stutter_sever.mp3",
+   "group": "real_bass3",
+   "note": "Stutter on slice at 16.31 s (D2, 73.7 Hz): a 125 ms chunk repeated 6 times, SEVER: repeat points snapped to matching phase. Measured per repeat: onset up to 1.78 (0.6 = audible line), dip up to 2.8 dB."
+  },
+  {
+   "name": "real_bass3_5_hold_source",
+   "file": "real_bass3_5_hold_source.mp3",
+   "group": "real_bass3",
+   "note": "Short note at 4.78 s (D3), 0.31 s as sliced."
+  },
+  {
+   "name": "real_bass3_6_hold_sever",
+   "file": "real_bass3_6_hold_sever.mp3",
+   "group": "real_bass3",
+   "note": "Held to 2 s with STRETCH-HOLD + decay-follow: 15 loop wraps, worst wrap onset 0.87 (0.6 = audible line)."
+  }
+ ],
+ "takes": {
+  "bass1": {
+   "title": "Real take 1",
+   "dur": 16.0,
+   "slices": 64,
+   "energy_slices": 90,
+   "flux_slices": 50,
+   "noise_rejected": 24,
+   "voiced": 0.495,
+   "techniques": {
+    "POP": 3,
+    "SLAP": 42,
+    "PICK": 11,
+    "GHOST": 3,
+    "DEAD": 2,
+    "FINGER": 1,
+    "PULL": 1,
+    "HAMMER": 1
+   },
+   "scan_s": 0.4,
+   "rechop": {
+    "slices": 37,
+    "legato_joins": 1,
+    "generic": {
+     "dips_over_3db": 26,
+     "legato_onsets_over_06": 1
+    },
+    "sever": {
+     "dips_over_3db": 21,
+     "legato_onsets_over_06": 1
+    }
+   },
+   "stutter": {
+    "at": 0.47,
+    "note": "D2",
+    "chunk_ms": 125,
+    "3_stutter_generic": {
+     "onset_max": 2.48,
+     "onset_mean": 2.48,
+     "dip_max": 7.6
+    },
+    "4_stutter_sever": {
+     "onset_max": 1.58,
+     "onset_mean": 1.58,
+     "dip_max": 0.5
+    }
+   },
+   "hold": {
+    "at": 0.47,
+    "wraps": 12,
+    "onset_max": 0.52
+   }
+  },
+  "bass2": {
+   "title": "Real take 2",
+   "dur": 32.0,
+   "slices": 136,
+   "energy_slices": 130,
+   "flux_slices": 114,
+   "noise_rejected": 32,
+   "voiced": 0.526,
+   "techniques": {
+    "PICK": 63,
+    "FINGER": 9,
+    "SLAP": 39,
+    "POP": 14,
+    "GHOST": 8,
+    "DEAD": 2,
+    "PULL": 1
+   },
+   "scan_s": 0.78,
+   "rechop": {
+    "slices": 31,
+    "legato_joins": 0,
+    "generic": {
+     "dips_over_3db": 21,
+     "legato_onsets_over_06": 0
+    },
+    "sever": {
+     "dips_over_3db": 20,
+     "legato_onsets_over_06": 0
+    }
+   },
+   "stutter": {
+    "at": 18.04,
+    "note": "D2",
+    "chunk_ms": 125,
+    "3_stutter_generic": {
+     "onset_max": 0.76,
+     "onset_mean": 0.76,
+     "dip_max": 3.8
+    },
+    "4_stutter_sever": {
+     "onset_max": 0.25,
+     "onset_mean": 0.25,
+     "dip_max": 0.3
+    }
+   },
+   "hold": {
+    "at": 18.04,
+    "wraps": 9,
+    "onset_max": 0.31
+   }
+  },
+  "bass3": {
+   "title": "Real take 3",
+   "dur": 18.58,
+   "slices": 96,
+   "energy_slices": 77,
+   "flux_slices": 104,
+   "noise_rejected": 29,
+   "voiced": 0.587,
+   "techniques": {
+    "SLAP": 24,
+    "POP": 65,
+    "GHOST": 2,
+    "FINGER": 3,
+    "PICK": 2
+   },
+   "scan_s": 0.45,
+   "rechop": {
+    "slices": 48,
+    "legato_joins": 0,
+    "generic": {
+     "dips_over_3db": 17,
+     "legato_onsets_over_06": 0
+    },
+    "sever": {
+     "dips_over_3db": 15,
+     "legato_onsets_over_06": 0
+    }
+   },
+   "stutter": {
+    "at": 16.31,
+    "note": "D2",
+    "chunk_ms": 125,
+    "3_stutter_generic": {
+     "onset_max": 0.57,
+     "onset_mean": 0.57,
+     "dip_max": 3.2
+    },
+    "4_stutter_sever": {
+     "onset_max": 1.78,
+     "onset_mean": 1.78,
+     "dip_max": 2.8
+    }
+   },
+   "hold": {
+    "at": 4.78,
+    "wraps": 15,
+    "onset_max": 0.87
+   }
+  }
+ }
+}
