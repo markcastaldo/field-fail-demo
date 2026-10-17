@@ -74,6 +74,7 @@
   <h2>Build log</h2>
   <div class="panel">
     <ul class="log">
+      <li><time>2026-10-16</time><div><b>Milestone 3: Morph</b><p>LOAD B analyses a second sample; the MORPH knob moves every atom of A toward B in time, pitch, width and level instead of crossfading. Pairing is optimal transport along frequency within slices of time, with amplitude as the mass, so fundamentals travel to fundamentals and harmonics to harmonics (a 110 Hz tone halfway to 330 Hz sits at 191 Hz, not at both). Morph 0 and 100% reproduce A and B exactly. Sounding notes now follow every knob live, handing over to the new cloud with a 20 ms crossfade, so Morph, Density or Stretch can be played and automated on a held note. Also new: per-region phase (SPLIT + HIGHS: tight lows, diffuse highs) and a NEON inner loop for Apple Silicon.</p></div></li>
       <li><time>2026-10-16</time><div><b>Milestone 2: Sculpt</b><p>Drag on the plane to select a region; SCOPE switches the macros between the whole cloud and the selection only (Shimmer just the highs, Density just the tail). Mute, gain and transpose a region; double-click to add an onset, right-click to remove one (they drive Lock and Tight). Every edit is a non-destructive op stack with undo, redo and reset to analysis, saved in the project, and an amber ghost of the previous cloud shows what each edit changed. Presets save the whole sound, cloud included, so they play without the original sample. Edited atoms remember the frequency they were analysed at, so transposed regions stay phase-coherent. 34 plugin checks pass.</p></div></li>
       <li><time>2026-10-16</time><div><b>Plugin v0.1: a playable instrument</b><p>VST3, AU and Standalone. Load or drop a sample; it analyses in the background and is playable after about 0.6 s while it keeps refining. 8 voices, root note C4 = original pitch, the 9 macros, Stretch with Lock, Snap to key and scale. The project stores the cloud itself, so a session reopens without the sample. Mac universal build and auval run in CI; 23 headless plugin checks pass.</p></div></li>
       <li><time>2026-10-16</time><div><b>Phase propagation: pitch, Snap and stretch stay whole</b><p>Building the plugin showed that a sustained sound shifted in pitch came out 20 dB too quiet: a partial is a chain of overlapping atoms whose analysed phases only line up at the original pitch and spacing. The engine now carries every phase to the new frequency and spacing (design doc 5.4), integrating pitch over time so bends and vibrato stay coherent too, and resets at onsets so hits stay intact. An octave up now plays at full level (5,033 vs 281 before, original 5,273). Before/after below.</p></div></li>
@@ -81,13 +82,26 @@
       <li><time>2026-10-16</time><div><b>Design doc v0.2</b><p>Findings folded back into the design: corrected render loop, transient lock, anchored Linear phase as the Tight punch control, noise layer, a cut-down v1 scope.</p></div></li>
       <li><time>2026-10-16</time><div><b>Python prototype (milestone 1)</b><p>Matching pursuit, the corrected renderer, phase modes, noise layer: the renders further down.</p></div></li>
     </ul>
-    <div class="road"><span class="done">M1 · Python prototype</span><span class="done">M1b · C++ engine</span><span class="done">v0.1 · Playable plugin (VST3 / AU / Standalone)</span><span class="done">M2 · Sculpt: select and edit atoms on the plane, op stack, presets</span><span class="next">M3 · Morph between two clouds, per-region settings</span><span class="planned">M4 · Analysis quality: refinement pass, longer atoms</span><span class="planned">M5 · Starter presets, onboarding, polish</span></div>
+    <div class="road"><span class="done">M1 · Python prototype</span><span class="done">M1b · C++ engine</span><span class="done">v0.1 · Playable plugin (VST3 / AU / Standalone)</span><span class="done">M2 · Sculpt: select and edit atoms on the plane, op stack, presets</span><span class="done">M3 · Morph between two clouds, per-region settings</span><span class="next">M4 · Analysis quality: refinement pass, longer atoms</span><span class="planned">M5 · Starter presets, onboarding, polish</span></div>
   </div>
 
   <h2>The plugin</h2>
   <div class="panel">
     <img class="shot" src="plugin-m2.png" alt="CLOUD ATOM plugin window: Sculpt toolbar, cloud view with a dashed selection box, nine macro knobs, settings row and keyboard" width="1000" height="690">
     <div class="legend">Milestone 2, rendered by the headless plugin tests: a 110 Hz tone stretched 2x, with Shimmer scoped to the dashed selection only. Builds go to testers directly.</div>
+  </div>
+
+
+  <h2>Morph: Reese into drums</h2>
+  <div class="panel">
+      <div class="ab"><div class="t">One held note while MORPH turns from 0 to 100% (2x stretch), through the plugin's live handover</div>
+        <div><audio controls preload="none" src="audio/morph_reese2drums_sweep.mp3"></audio></div></div>
+      <div class="ab"><div class="t">Morph 0% (the Reese)</div><div><audio controls preload="none" src="audio/morph_reese2drums_000.mp3"></audio></div></div>
+      <div class="ab"><div class="t">Morph 25%</div><div><audio controls preload="none" src="audio/morph_reese2drums_025.mp3"></audio></div></div>
+      <div class="ab"><div class="t">Morph 50%</div><div><audio controls preload="none" src="audio/morph_reese2drums_050.mp3"></audio></div></div>
+      <div class="ab"><div class="t">Morph 75%</div><div><audio controls preload="none" src="audio/morph_reese2drums_075.mp3"></audio></div></div>
+      <div class="ab"><div class="t">Morph 100% (the drums)</div><div><audio controls preload="none" src="audio/morph_reese2drums_100.mp3"></audio></div></div>
+      <div class="legend">Every in-between state is a cloud of real atoms on the move: the bass partials slide into the kick and snare bodies, the noise layers blend.</div>
   </div>
 
   <h2>Phase propagation, before and after</h2>
