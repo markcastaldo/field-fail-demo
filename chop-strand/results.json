@@ -1,0 +1,787 @@
+{
+ "demos": [
+  {
+   "name": "take_legato_line",
+   "file": "take_legato_line.mp3",
+   "group": "takes",
+   "note": "E minor line: hammer-ons, pull-offs, slides, a vibrato note, same-pitch re-plucks"
+  },
+  {
+   "name": "rechop_legato_line_1_transient_slicer",
+   "file": "rechop_legato_line_1_transient_slicer.mp3",
+   "group": "rechop_legato_line",
+   "note": "A generic energy slicer, slices played in reverse order with 5 ms fades. 24 slices for 36 real boundaries: it misses most legato changes, so hammer-ons and slides stay inside longer slices."
+  },
+  {
+   "name": "rechop_legato_line_2_scan_5ms",
+   "file": "rechop_legato_line_2_scan_5ms.mp3",
+   "group": "rechop_legato_line",
+   "note": "SCAN's 34 slices in the same reverse order, still with generic 5 ms fades."
+  },
+  {
+   "name": "rechop_legato_line_3_scan_sever",
+   "file": "rechop_legato_line_3_scan_sever.mp3",
+   "group": "rechop_legato_line",
+   "note": "SCAN slices + SEVER joins: phase-aligned crossfades into legato starts, full-level attacks on plucks, fades kept inside each slice."
+  },
+  {
+   "name": "take_ghost_groove",
+   "file": "take_ghost_groove.mp3",
+   "group": "takes",
+   "note": "16th-note funk: ghost notes, dead notes, same-pitch 16th re-plucks, fret noise"
+  },
+  {
+   "name": "take_low_b",
+   "file": "take_low_b.mp3",
+   "group": "takes",
+   "note": "5-string low B: 31-41 Hz notes, weak fundamental, same-pitch re-plucks, 60 Hz hum"
+  },
+  {
+   "name": "rechop_low_b_1_transient_slicer",
+   "file": "rechop_low_b_1_transient_slicer.mp3",
+   "group": "rechop_low_b",
+   "note": "A generic energy slicer, slices played in reverse order with 5 ms fades. It fires on the low-frequency ripple: 85 slices for 14 real boundaries, so notes are cut mid-cycle."
+  },
+  {
+   "name": "rechop_low_b_2_scan_5ms",
+   "file": "rechop_low_b_2_scan_5ms.mp3",
+   "group": "rechop_low_b",
+   "note": "SCAN's 14 slices in the same reverse order, still with generic 5 ms fades."
+  },
+  {
+   "name": "rechop_low_b_3_scan_sever",
+   "file": "rechop_low_b_3_scan_sever.mp3",
+   "group": "rechop_low_b",
+   "note": "SCAN slices + SEVER joins: phase-aligned crossfades into legato starts, full-level attacks on plucks, fades kept inside each slice."
+  },
+  {
+   "name": "take_slap_pop",
+   "file": "take_slap_pop.mp3",
+   "group": "takes",
+   "note": "slap and pop: octave pops, dead notes, slap hammer-ons"
+  },
+  {
+   "name": "stutter_B0_1_generic_5ms",
+   "file": "stutter_B0_1_generic_5ms.mp3",
+   "group": "stutter",
+   "note": "B0 (30.9 Hz): a 1/16 at 92 BPM repeated 6 times. Generic 5 ms crossfade at raw cut points: one 5 ms fade is a fraction of a 32 ms cycle."
+  },
+  {
+   "name": "stutter_B0_2_sever",
+   "file": "stutter_B0_2_sever.mp3",
+   "group": "stutter",
+   "note": "B0 (30.9 Hz): a 1/16 at 92 BPM repeated 6 times. SEVER: repeat points snapped to matching phase, crossfade = whole periods."
+  },
+  {
+   "name": "stutter_E1_1_generic_5ms",
+   "file": "stutter_E1_1_generic_5ms.mp3",
+   "group": "stutter",
+   "note": "E1 (41.2 Hz): a 1/16 at 92 BPM repeated 6 times. Generic 5 ms crossfade at raw cut points: one 5 ms fade is a fraction of a 24 ms cycle."
+  },
+  {
+   "name": "stutter_E1_2_sever",
+   "file": "stutter_E1_2_sever.mp3",
+   "group": "stutter",
+   "note": "E1 (41.2 Hz): a 1/16 at 92 BPM repeated 6 times. SEVER: repeat points snapped to matching phase, crossfade = whole periods."
+  },
+  {
+   "name": "hold_E1_0_staccato",
+   "file": "hold_E1_0_staccato.mp3",
+   "group": "hold",
+   "note": "E1 source slice: 0.4 s."
+  },
+  {
+   "name": "hold_E1_1_naive_loop",
+   "file": "hold_E1_1_naive_loop.mp3",
+   "group": "hold",
+   "note": "Naive loop: middle of the slice, raw loop points, 5 ms fades."
+  },
+  {
+   "name": "hold_E1_2_sever",
+   "file": "hold_E1_2_sever.mp3",
+   "group": "hold",
+   "note": "STRETCH-HOLD: whole-period loop, xcorr-aligned, 4-period fades, forward jitter. Note it stops decaying (organ-like)."
+  },
+  {
+   "name": "hold_E1_3_sever_decay",
+   "file": "hold_E1_3_sever_decay.mp3",
+   "group": "hold",
+   "note": "STRETCH-HOLD + decay-follow: keeps the note's own measured decay rate, so it rings like a longer-sustaining string."
+  },
+  {
+   "name": "hold_E1_4_real_ring",
+   "file": "hold_E1_4_real_ring.mp3",
+   "group": "hold",
+   "note": "Reference: the same note actually ringing for 2 s."
+  },
+  {
+   "name": "hold_A1_0_staccato",
+   "file": "hold_A1_0_staccato.mp3",
+   "group": "hold",
+   "note": "A1 source slice: 0.4 s."
+  },
+  {
+   "name": "hold_A1_1_naive_loop",
+   "file": "hold_A1_1_naive_loop.mp3",
+   "group": "hold",
+   "note": "Naive loop: middle of the slice, raw loop points, 5 ms fades."
+  },
+  {
+   "name": "hold_A1_2_sever",
+   "file": "hold_A1_2_sever.mp3",
+   "group": "hold",
+   "note": "STRETCH-HOLD: whole-period loop, xcorr-aligned, 4-period fades, forward jitter. Note it stops decaying (organ-like)."
+  },
+  {
+   "name": "hold_A1_3_sever_decay",
+   "file": "hold_A1_3_sever_decay.mp3",
+   "group": "hold",
+   "note": "STRETCH-HOLD + decay-follow: keeps the note's own measured decay rate, so it rings like a longer-sustaining string."
+  },
+  {
+   "name": "hold_A1_4_real_ring",
+   "file": "hold_A1_4_real_ring.mp3",
+   "group": "hold",
+   "note": "Reference: the same note actually ringing for 2 s."
+  }
+ ],
+ "scan": {
+  "tuning": {
+   "rows": [
+    {
+     "method": "SCAN",
+     "P": 0.974,
+     "R": 0.919,
+     "F": 0.946,
+     "noise_hits": 1,
+     "noise": 111,
+     "by_type": {
+      "PLUCK": [
+       265,
+       275
+      ],
+      "HAMMER": [
+       27,
+       27
+      ],
+      "PULL": [
+       15,
+       16
+      ],
+      "SLIDE_START": [
+       21,
+       22
+      ],
+      "SLIDE_END": [
+       16,
+       22
+      ],
+      "GHOST": [
+       33,
+       51
+      ],
+      "DEAD": [
+       32,
+       32
+      ]
+     }
+    },
+    {
+     "method": "flux slicer",
+     "P": 0.632,
+     "R": 0.609,
+     "F": 0.62,
+     "noise_hits": 85,
+     "noise": 111,
+     "by_type": {
+      "PLUCK": [
+       226,
+       275
+      ],
+      "HAMMER": [
+       4,
+       27
+      ],
+      "PULL": [
+       8,
+       16
+      ],
+      "SLIDE_START": [
+       2,
+       22
+      ],
+      "SLIDE_END": [
+       0,
+       22
+      ],
+      "GHOST": [
+       16,
+       51
+      ],
+      "DEAD": [
+       15,
+       32
+      ]
+     }
+    },
+    {
+     "method": "energy slicer",
+     "P": 0.472,
+     "R": 0.672,
+     "F": 0.554,
+     "noise_hits": 38,
+     "noise": 111,
+     "by_type": {
+      "PLUCK": [
+       236,
+       275
+      ],
+      "HAMMER": [
+       5,
+       27
+      ],
+      "PULL": [
+       0,
+       16
+      ],
+      "SLIDE_START": [
+       4,
+       22
+      ],
+      "SLIDE_END": [
+       5,
+       22
+      ],
+      "GHOST": [
+       32,
+       51
+      ],
+      "DEAD": [
+       17,
+       32
+      ]
+     }
+    }
+   ],
+   "analysis_s": 5.01,
+   "audio_s": 165.5
+  },
+  "heldout": {
+   "rows": [
+    {
+     "method": "SCAN",
+     "P": 0.962,
+     "R": 0.879,
+     "F": 0.919,
+     "noise_hits": 8,
+     "noise": 155,
+     "by_type": {
+      "PLUCK": [
+       299,
+       309
+      ],
+      "GHOST": [
+       37,
+       60
+      ],
+      "HAMMER": [
+       18,
+       18
+      ],
+      "SLIDE_START": [
+       18,
+       18
+      ],
+      "SLIDE_END": [
+       10,
+       18
+      ],
+      "DEAD": [
+       27,
+       35
+      ],
+      "PULL": [
+       21,
+       31
+      ]
+     }
+    },
+    {
+     "method": "flux slicer",
+     "P": 0.744,
+     "R": 0.624,
+     "F": 0.679,
+     "noise_hits": 102,
+     "noise": 155,
+     "by_type": {
+      "PLUCK": [
+       249,
+       309
+      ],
+      "GHOST": [
+       23,
+       60
+      ],
+      "HAMMER": [
+       3,
+       18
+      ],
+      "SLIDE_START": [
+       0,
+       18
+      ],
+      "SLIDE_END": [
+       3,
+       18
+      ],
+      "DEAD": [
+       22,
+       35
+      ],
+      "PULL": [
+       5,
+       31
+      ]
+     }
+    },
+    {
+     "method": "energy slicer",
+     "P": 0.579,
+     "R": 0.652,
+     "F": 0.613,
+     "noise_hits": 51,
+     "noise": 155,
+     "by_type": {
+      "PLUCK": [
+       267,
+       309
+      ],
+      "GHOST": [
+       28,
+       60
+      ],
+      "HAMMER": [
+       1,
+       18
+      ],
+      "SLIDE_START": [
+       2,
+       18
+      ],
+      "SLIDE_END": [
+       3,
+       18
+      ],
+      "DEAD": [
+       15,
+       35
+      ],
+      "PULL": [
+       3,
+       31
+      ]
+     }
+    }
+   ],
+   "analysis_s": 6.38,
+   "audio_s": 209.7
+  }
+ },
+ "takes": {
+  "legato_line": {
+   "desc": "E minor line: hammer-ons, pull-offs, slides, a vibrato note, same-pitch re-plucks",
+   "dur": 11.03,
+   "F": 0.886
+  },
+  "ghost_groove": {
+   "desc": "16th-note funk: ghost notes, dead notes, same-pitch 16th re-plucks, fret noise",
+   "dur": 10.19,
+   "F": 0.964
+  },
+  "low_b": {
+   "desc": "5-string low B: 31-41 Hz notes, weak fundamental, same-pitch re-plucks, 60 Hz hum",
+   "dur": 10.88,
+   "F": 1.0
+  },
+  "slap_pop": {
+   "desc": "slap and pop: octave pops, dead notes, slap hammer-ons",
+   "dur": 8.1,
+   "F": 0.957
+  }
+ },
+ "labels_heldout": {
+  "SLAP": {
+   "SLAP": 21,
+   "PICK": 8,
+   "POP": 9
+  },
+  "FINGER": {
+   "FINGER": 149,
+   "PICK": 31,
+   "HAMMER": 5,
+   "PULL": 1
+  },
+  "PICK": {
+   "PICK": 26,
+   "FINGER": 3,
+   "SLAP": 28,
+   "HAMMER": 1
+  },
+  "PULL": {
+   "PULL": 17,
+   "PICK": 1,
+   "FINGER": 3
+  },
+  "POP": {
+   "SLAP": 2,
+   "POP": 15
+  },
+  "GHOST": {
+   "GHOST": 34,
+   "PICK": 1,
+   "SLAP": 1,
+   "FINGER": 1
+  },
+  "HAMMER": {
+   "HAMMER": 18
+  },
+  "DEAD": {
+   "DEAD": 25,
+   "GHOST": 1,
+   "FINGER": 1
+  },
+  "SLIDE": {
+   "SLIDE": 18
+  }
+ },
+ "sever": {
+  "e1": {
+   "fixed5_lin": {
+    "n": 240,
+    "click_med": 0.3582264931956536,
+    "click_p90": 0.8261079573063135,
+    "dip_med": 1.9479991239856886,
+    "dip_p90": 4.207425271124906,
+    "audible": 0.4166666666666667
+   },
+   "fixed5_eqp": {
+    "n": 240,
+    "click_med": 0.41462968146546636,
+    "click_p90": 0.8239522704844278,
+    "dip_med": 1.5073196478713085,
+    "dip_p90": 3.7805058773892566,
+    "audible": 0.4125
+   },
+   "zc_period": {
+    "n": 240,
+    "click_med": 0.14476489334933207,
+    "click_p90": 0.253242577394641,
+    "dip_med": 0.38781532833240107,
+    "dip_p90": 0.7304331060236517,
+    "audible": 0.0625
+   },
+   "xcorr_period": {
+    "n": 240,
+    "click_med": 0.1502757929413757,
+    "click_p90": 0.2430791448996064,
+    "dip_med": 0.3517353122572535,
+    "dip_p90": 0.6658506517990788,
+    "audible": 0.0
+   },
+   "xcorr_period_eqp": {
+    "n": 240,
+    "click_med": 0.15656277848803368,
+    "click_p90": 0.24572175009005515,
+    "dip_med": 0.2409907335137369,
+    "dip_p90": 0.46468243468858994,
+    "audible": 0.0
+   },
+   "xcorr_period_auto": {
+    "n": 240,
+    "click_med": 0.1484726711213527,
+    "click_p90": 0.2479247495954058,
+    "dip_med": 0.39941329451012475,
+    "dip_p90": 0.7362927328873662,
+    "audible": 0.0
+   },
+   "sever": {
+    "n": 240,
+    "click_med": 0.1502757929413757,
+    "click_p90": 0.2430791448996064,
+    "dip_med": 0.3517353122572535,
+    "dip_p90": 0.6658506517990788,
+    "audible": 0.0
+   }
+  },
+  "e2": {
+   "fixed5_lin": {
+    "n": 150,
+    "click_med": 0.2579321326244307,
+    "click_p90": 1.4929618457119855,
+    "dip_med": 2.26406934487747,
+    "dip_p90": 3.845657574092551,
+    "audible": 0.4533333333333333
+   },
+   "fixed5_eqp": {
+    "n": 150,
+    "click_med": 0.31103687064442753,
+    "click_p90": 1.4627705724094906,
+    "dip_med": 1.9647646606984743,
+    "dip_p90": 3.58071393787146,
+    "audible": 0.42
+   },
+   "zc_period": {
+    "n": 150,
+    "click_med": 0.24796456477314363,
+    "click_p90": 1.0898601824918768,
+    "dip_med": 2.665127163153713,
+    "dip_p90": 4.034719786740756,
+    "audible": 0.49333333333333335
+   },
+   "xcorr_period": {
+    "n": 150,
+    "click_med": 0.24439526875771553,
+    "click_p90": 1.128554538283107,
+    "dip_med": 2.7015008568584236,
+    "dip_p90": 3.9151858050547212,
+    "audible": 0.5
+   },
+   "xcorr_period_eqp": {
+    "n": 150,
+    "click_med": 0.2655863960439697,
+    "click_p90": 1.36046044723936,
+    "dip_med": 1.674744346089252,
+    "dip_p90": 3.178950957143423,
+    "audible": 0.3
+   },
+   "xcorr_period_auto": {
+    "n": 150,
+    "click_med": 0.25879621624454036,
+    "click_p90": 1.2174428474370798,
+    "dip_med": 2.2372477565214677,
+    "dip_p90": 3.8131474181825604,
+    "audible": 0.4666666666666667
+   },
+   "sever": {
+    "n": 150,
+    "click_med": 0.2686595766546942,
+    "click_p90": 1.36046044723936,
+    "dip_med": 1.7262139712390354,
+    "dip_p90": 3.178950957143423,
+    "audible": 0.3
+   }
+  },
+  "e3": [
+   {
+    "midi": 23,
+    "mode": "naive",
+    "wraps": 11,
+    "click_med": 0.20930088904950872,
+    "click_max": 0.20930088904950872,
+    "dip_med": 0.1809612915136185,
+    "dip_max": 0.1809612915136185,
+    "wobble_db": 0.22802930668104415,
+    "slope_db_s": 0.012662737733881387,
+    "natural_slope_db_s": -4.133084269103752
+   },
+   {
+    "midi": 23,
+    "mode": "sever",
+    "wraps": 11,
+    "click_med": 0.2809402977806157,
+    "click_max": 1.4703512440726498,
+    "dip_med": 0.08544520952702861,
+    "dip_max": 0.1358519490078578,
+    "wobble_db": 0.06580848850732476,
+    "slope_db_s": -0.043264592754142295,
+    "natural_slope_db_s": -4.133084269103752
+   },
+   {
+    "midi": 23,
+    "mode": "sever+decay",
+    "wraps": 11,
+    "click_med": 0.5374740065062872,
+    "click_max": 1.3084266731345753,
+    "dip_med": 0.05124954794547243,
+    "dip_max": 0.13501656063525935,
+    "wobble_db": 0.07603426554728818,
+    "slope_db_s": -4.165784335832301,
+    "natural_slope_db_s": -4.133084269103752
+   },
+   {
+    "midi": 28,
+    "mode": "naive",
+    "wraps": 11,
+    "click_med": 0.29124032994139337,
+    "click_max": 0.29124032994139337,
+    "dip_med": 0.5972311498429956,
+    "dip_max": 0.5972311498429956,
+    "wobble_db": 0.5152051827414474,
+    "slope_db_s": -0.07177685949533966,
+    "natural_slope_db_s": -4.621634438241773
+   },
+   {
+    "midi": 28,
+    "mode": "sever",
+    "wraps": 12,
+    "click_med": 0.18722101521412288,
+    "click_max": 0.285214770264968,
+    "dip_med": 0.1509617782451116,
+    "dip_max": 0.1910439679912681,
+    "wobble_db": 0.10560358085418947,
+    "slope_db_s": 0.001957988082707334,
+    "natural_slope_db_s": -4.621634438241773
+   },
+   {
+    "midi": 28,
+    "mode": "sever+decay",
+    "wraps": 12,
+    "click_med": 0.18268541783462916,
+    "click_max": 0.22116834484930578,
+    "dip_med": 0.17402905055886553,
+    "dip_max": 0.2128764996366197,
+    "wobble_db": 0.10578754035781048,
+    "slope_db_s": -4.609284960851047,
+    "natural_slope_db_s": -4.621634438241773
+   },
+   {
+    "midi": 33,
+    "mode": "naive",
+    "wraps": 11,
+    "click_med": 0.14707302871692376,
+    "click_max": 0.14707302871692376,
+    "dip_med": 1.414894505444666,
+    "dip_max": 1.414894505444666,
+    "wobble_db": 0.35698487859461103,
+    "slope_db_s": -0.08946860753676134,
+    "natural_slope_db_s": -5.093309910382848
+   },
+   {
+    "midi": 33,
+    "mode": "sever",
+    "wraps": 11,
+    "click_med": 0.20806145062685127,
+    "click_max": 0.2762869086186224,
+    "dip_med": 0.1495770459990311,
+    "dip_max": 0.1957153307459194,
+    "wobble_db": 0.13458627889265512,
+    "slope_db_s": 0.014328782332598504,
+    "natural_slope_db_s": -5.093309910382848
+   },
+   {
+    "midi": 33,
+    "mode": "sever+decay",
+    "wraps": 11,
+    "click_med": 0.23619263500236398,
+    "click_max": 0.3266636484561365,
+    "dip_med": 0.16467079610560198,
+    "dip_max": 0.19880977579915715,
+    "wobble_db": 0.14204181768095545,
+    "slope_db_s": -5.20641636329714,
+    "natural_slope_db_s": -5.093309910382848
+   },
+   {
+    "midi": 40,
+    "mode": "naive",
+    "wraps": 11,
+    "click_med": 0.5235104962750843,
+    "click_max": 0.5235104962750843,
+    "dip_med": 3.6870576518603944,
+    "dip_max": 3.6870576518603944,
+    "wobble_db": 0.5318602432247652,
+    "slope_db_s": -0.04019572272975245,
+    "natural_slope_db_s": -5.837540875612035
+   },
+   {
+    "midi": 40,
+    "mode": "sever",
+    "wraps": 11,
+    "click_med": 0.24017933089951443,
+    "click_max": 0.29949448633930154,
+    "dip_med": 0.1814885667269266,
+    "dip_max": 0.2164305363714405,
+    "wobble_db": 0.18832767726340394,
+    "slope_db_s": 0.03406857150855012,
+    "natural_slope_db_s": -5.837540875612035
+   },
+   {
+    "midi": 40,
+    "mode": "sever+decay",
+    "wraps": 11,
+    "click_med": 0.22420836130240818,
+    "click_max": 0.28089057660796973,
+    "dip_med": 0.1552562457127422,
+    "dip_max": 0.18219361906516696,
+    "wobble_db": 0.18836679645406915,
+    "slope_db_s": -5.778639025344724,
+    "natural_slope_db_s": -5.837540875612035
+   }
+  ],
+  "e1_seam_spearman": 0.923,
+  "e1_by_note": {
+   "23": {
+    "fixed5_lin": 0.525,
+    "fixed5_eqp": 0.7,
+    "zc_period": 0.1,
+    "xcorr_period": 0.0,
+    "xcorr_period_eqp": 0.0,
+    "xcorr_period_auto": 0.0,
+    "sever": 0.0
+   },
+   "28": {
+    "fixed5_lin": 0.588,
+    "fixed5_eqp": 0.512,
+    "zc_period": 0.013,
+    "xcorr_period": 0.0,
+    "xcorr_period_eqp": 0.0,
+    "xcorr_period_auto": 0.0,
+    "sever": 0.0
+   },
+   "33": {
+    "fixed5_lin": 0.375,
+    "fixed5_eqp": 0.4,
+    "zc_period": 0.225,
+    "xcorr_period": 0.0,
+    "xcorr_period_eqp": 0.0,
+    "xcorr_period_auto": 0.0,
+    "sever": 0.0
+   },
+   "40": {
+    "fixed5_lin": 0.225,
+    "fixed5_eqp": 0.175,
+    "zc_period": 0.025,
+    "xcorr_period": 0.0,
+    "xcorr_period_eqp": 0.0,
+    "xcorr_period_auto": 0.0,
+    "sever": 0.0
+   },
+   "45": {
+    "fixed5_lin": 0.2,
+    "fixed5_eqp": 0.175,
+    "zc_period": 0.0,
+    "xcorr_period": 0.0,
+    "xcorr_period_eqp": 0.0,
+    "xcorr_period_auto": 0.0,
+    "sever": 0.0
+   }
+  }
+ },
+ "rechop_seams": {
+  "fixed5_lin legato": [
+   34,
+   41
+  ],
+  "fixed5_lin pluck": [
+   84,
+   143
+  ],
+  "sever legato": [
+   14,
+   41
+  ],
+  "sever pluck": [
+   58,
+   143
+  ]
+ }
+}
