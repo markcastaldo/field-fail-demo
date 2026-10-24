@@ -66,7 +66,7 @@
 <body>
 <main>
   <nav class="plugtabs"><a href="../">FIELD//FAIL</a><a href="./" class="on">CLOUD//ATOM</a><a href="../chop-strand/">CHOP//STRAND</a></nav>
-  <h1>CLOUD<span>//</span>ATOM <span style="color:var(--dim);font-size:14px">instrument plugin · v1.1</span></h1>
+  <h1>CLOUD<span>//</span>ATOM <span style="color:var(--dim);font-size:14px">instrument plugin · v1.2</span></h1>
   <p class="sub">A sample-to-splat instrument: every sound becomes a cloud of Gabor atoms you can stretch, snap, sculpt and morph. Build log and renders from the plugin engine first, the original Python prototype below.
     </p>
 
@@ -74,6 +74,7 @@
   <h2>Build log</h2>
   <div class="panel">
     <ul class="log">
+      <li><time>2026-10-24</time><div><b>v1.2: start and end markers</b><p>Stripey asked for a way to pick which part of the sample plays. A strip above the cloud now shows the whole sample with draggable START and END markers (shaded outside, double-click to reset). The note starts at START, and END cuts it with a 5 ms fade even with the key held. Stretch, Lock, Grid and Bounce all count from the start marker, edits stay put in the sample's own time, and the markers are automatable and saved with the project.</p></div></li>
       <li><time>2026-10-16</time><div><b>v1.1: Stripey's notes (stereo, grid, Tight)</b><p>Stereo: samples now load in stereo and every atom keeps where it sat (its left/right balance and phase offset, measured from the source), with the leftover side signal in the noise layer. WIDTH goes from mono through the sample's own image (the Reese comes back at side/mid 0.72 vs 0.71 in the source) to 200%, widening only above the bass; SPREAD gives mono samples a stereo image by panning partials by frequency. Grid: GRID pulls the cloud onto the host tempo (1/4 to 1/32, straight, dotted or triplet): in Hits mode every hit lands on its own grid step and stays intact (within 0.1 ms in the tests), in Atoms mode any sound turns into pulses. Tight was broken: it re-phased whole tails and its extra peak went straight into the limiter. It now shapes only each hit (5 ms before to 30 ms after the onset), works on held notes, and is honest about real drums, where hits are already coherent and it adds about 1.5 dB of punch.</p></div></li>
       <li><time>2026-10-16</time><div><b>Milestone 5: ready to play</b><p>15 starter presets organised by job (Bass, Drums, Vocals, Textures, FX), each telling you what to load; they also show up as the host's program list. Right-click any macro to see what it drives, reset it, or lock it; RANDOM explores musical ranges around your sound and leaves locked macros alone. BOUNCE freezes the current sound to a WAV, and the status line shows CPU. On Apple Silicon CI the universal build passes auval, and 8 stretched voices with the noise layer use about 4% of a core. 45 plugin checks pass. Every milestone in the design doc's roadmap is now built.</p></div></li>
       <li><time>2026-10-16</time><div><b>Milestone 4: sharper analysis</b><p>A refinement pass after the pursuit: every atom, loudest first, is put back and its time, frequency, width and chirp are re-fitted to the final cloud (cyclic matching pursuit). Same atom count, cleaner sound: the Reese at 800 atoms goes from 24.2 to 28.5 dB SNR, drums and lo-fi gain 1 to 2 dB, for about 10 to 15% more analysis time, and atoms can now glide (chirp). Longer atoms were measured too and left off: +1.3 dB on the Reese, nothing elsewhere, 3 to 5 times slower. Quality: Draft = pursuit only, Normal = 1 pass, Fine = 2. Also: the plugin's inner loop now has a NEON path for Apple Silicon.</p></div></li>
@@ -85,13 +86,13 @@
       <li><time>2026-10-16</time><div><b>Design doc v0.2</b><p>Findings folded back into the design: corrected render loop, transient lock, anchored Linear phase as the Tight punch control, noise layer, a cut-down v1 scope.</p></div></li>
       <li><time>2026-10-16</time><div><b>Python prototype (milestone 1)</b><p>Matching pursuit, the corrected renderer, phase modes, noise layer: the renders further down.</p></div></li>
     </ul>
-    <div class="road"><span class="done">M1 · Python prototype</span><span class="done">M1b · C++ engine</span><span class="done">v0.1 · Playable plugin (VST3 / AU / Standalone)</span><span class="done">M2 · Sculpt: select and edit atoms on the plane, op stack, presets</span><span class="done">M3 · Morph between two clouds, per-region settings</span><span class="done">M4 · Analysis quality: refinement pass, longer atoms</span><span class="done">M5 · Starter presets, onboarding, polish</span><span class="done">v1.1 · Stereo, Width, Grid, Tight fix (Stripey)</span></div>
+    <div class="road"><span class="done">M1 · Python prototype</span><span class="done">M1b · C++ engine</span><span class="done">v0.1 · Playable plugin (VST3 / AU / Standalone)</span><span class="done">M2 · Sculpt: select and edit atoms on the plane, op stack, presets</span><span class="done">M3 · Morph between two clouds, per-region settings</span><span class="done">M4 · Analysis quality: refinement pass, longer atoms</span><span class="done">M5 · Starter presets, onboarding, polish</span><span class="done">v1.1 · Stereo, Width, Grid, Tight fix (Stripey)</span><span class="done">v1.2 · Start / end markers (Stripey)</span></div>
   </div>
 
   <h2>The plugin</h2>
   <div class="panel">
-    <img class="shot" src="plugin-v1.png" alt="CLOUD ATOM plugin window: Load, Load B and Presets; Sculpt toolbar with Random and Bounce; cloud view with a dashed selection box; ten macro knobs; settings row and keyboard" width="1100" height="782">
-    <div class="legend">The plugin at v1.1 (WIDTH and GRID in the macro row, PLAY and ENGINE rows below), rendered by the headless plugin tests: a 110 Hz tone stretched 2x, with Shimmer scoped to the dashed selection only. Builds go to testers directly.</div>
+    <img class="shot" src="plugin-v1.png" alt="CLOUD ATOM plugin window: Load, Load B and Presets; Sculpt toolbar with Random and Bounce; cloud view with a dashed selection box; ten macro knobs; settings row and keyboard" width="1100" height="822">
+    <div class="legend">The plugin at v1.2: the START / END strip above the cloud, WIDTH and GRID in the macro row, PLAY and ENGINE rows below; rendered by the headless plugin tests: a 110 Hz tone stretched 2x, with Shimmer scoped to the dashed selection only. Builds go to testers directly.</div>
   </div>
 
 
